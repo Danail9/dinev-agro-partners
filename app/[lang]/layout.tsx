@@ -1,25 +1,27 @@
-import type { Metadata } from 'next';
-import { ReactNode } from 'react';
-import { isValidLocale, siteData } from '@/lib/content';
+import type { Metadata } from "next";
+import { ReactNode } from "react";
+import { isValidLocale, siteData } from "@/lib/content";
 
 interface Props {
   children: ReactNode;
-  params: { lang: string };
+  params: Promise<{ lang: string }>;
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const lang = isValidLocale(params.lang) ? params.lang : 'en';
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  const validLang = isValidLocale(lang) ? lang : "en";
   return {
-    title: `${siteData.brandName} – ${siteData.tagline[lang]}`,
-    description: siteData.hero.subheadline[lang],
+    title: `${siteData.brandName} – ${siteData.tagline[validLang]}`,
+    description: siteData.hero.subheadline[validLang],
     keywords: siteData.seoKeywords,
     openGraph: {
       title: siteData.brandName,
-      description: siteData.hero.subheadline[lang]
-    }
+      description: siteData.hero.subheadline[validLang],
+    },
   };
 }
 
-export default function LocaleLayout({ children }: Props) {
+export default async function LocaleLayout({ children, params }: Props) {
+  await params;
   return <>{children}</>;
 }

@@ -1,31 +1,42 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 const labels = {
   en: {
-    name: 'Name',
-    company: 'Company',
-    phone: 'Phone',
-    email: 'Email',
-    message: 'Message',
-    submit: 'Send Message',
-    success: 'Your message is ready to send through your email client.'
+    name: "Full Name",
+    company: "Company",
+    phone: "Phone Number",
+    email: "Email Address",
+    message: "Your Message",
+    submit: "Send Message",
+    success: "Your message is ready to send through your email client.",
+    formTitle: "Send us a message",
+    formDesc:
+      "Fill out the form below and we'll get back to you within 24 hours.",
   },
   bg: {
-    name: 'Име',
-    company: 'Компания',
-    phone: 'Телефон',
-    email: 'Имейл',
-    message: 'Съобщение',
-    submit: 'Изпрати',
-    success: 'Съобщението е готово за изпращане чрез вашия имейл клиент.'
-  }
+    name: "Име и фамилия",
+    company: "Компания",
+    phone: "Телефонен номер",
+    email: "Имейл адрес",
+    message: "Вашето съобщение",
+    submit: "Изпрати",
+    success: "Съобщението е готово за изпращане чрез вашия имейл клиент.",
+    formTitle: "Изпратете ни съобщение",
+    formDesc: "Попълнете формата и ще се свържем с вас до 24 часа.",
+  },
 };
 
-export function ContactForm({ locale }: { locale: 'en' | 'bg' }) {
+export function ContactForm({ locale }: { locale: "en" | "bg" }) {
   const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({ name: '', company: '', phone: '', email: '', message: '' });
+  const [form, setForm] = useState({
+    name: "",
+    company: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,34 +46,83 @@ export function ContactForm({ locale }: { locale: 'en' | 'bg' }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-soft">
-      <div className="grid gap-5 sm:grid-cols-2">
-        {(['name', 'company', 'phone', 'email'] as const).map((field) => (
-          <label key={field} className="block text-sm font-medium text-slate-700">
-            {labels[locale][field]}
-            <input
-              type={field === 'email' ? 'email' : 'text'}
-              required
-              value={form[field]}
-              onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-              className="mt-2 w-full rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-brand-dark focus:ring-2 focus:ring-brand-gold/20"
-            />
-          </label>
-        ))}
-      </div>
-      <label className="block text-sm font-medium text-slate-700">
-        {labels[locale].message}
-        <textarea
-          required
-          value={form.message}
-          onChange={(e) => setForm({ ...form, message: e.target.value })}
-          className="mt-2 w-full min-h-[160px] rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-brand-dark focus:ring-2 focus:ring-brand-gold/20"
-        />
-      </label>
-      <button type="submit" className="inline-flex items-center justify-center rounded-full bg-brand-dark px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#174430]">
-        {labels[locale].submit}
-      </button>
-      {sent ? <p className="text-sm text-brand-dark">{labels[locale].success}</p> : null}
-    </form>
+    <div className="rounded-2xl border border-slate-100 bg-white p-8 shadow-soft sm:p-10">
+      <h2 className="text-lg font-bold text-slate-900">
+        {labels[locale].formTitle}
+      </h2>
+      <p className="mt-1 text-sm text-slate-500">{labels[locale].formDesc}</p>
+
+      <form onSubmit={handleSubmit} className="mt-7 space-y-5">
+        <div className="grid gap-5 sm:grid-cols-2">
+          {(["name", "company", "phone", "email"] as const).map((field) => (
+            <label key={field} className="block">
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                {labels[locale][field]}
+              </span>
+              <input
+                type={field === "email" ? "email" : "text"}
+                required
+                value={form[field]}
+                onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                className="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-brand-dark focus:bg-white focus:ring-2 focus:ring-brand-dark/10"
+                placeholder={labels[locale][field]}
+              />
+            </label>
+          ))}
+        </div>
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            {labels[locale].message}
+          </span>
+          <textarea
+            required
+            value={form.message}
+            onChange={(e) => setForm({ ...form, message: e.target.value })}
+            className="mt-1.5 w-full min-h-[140px] rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-brand-dark focus:bg-white focus:ring-2 focus:ring-brand-dark/10 resize-none"
+            placeholder={
+              locale === "en"
+                ? "Tell us about your needs..."
+                : "Разкажете ни за вашите нужди..."
+            }
+          />
+        </label>
+        <div className="flex items-center gap-4">
+          <button type="submit" className="btn-primary !px-8 !py-3.5">
+            {labels[locale].submit}
+            <svg
+              className="ml-2 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+              />
+            </svg>
+          </button>
+          {sent && (
+            <p className="flex items-center gap-1.5 text-sm font-medium text-brand-dark">
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.5 12.75l6 6 9-13.5"
+                />
+              </svg>
+              {labels[locale].success}
+            </p>
+          )}
+        </div>
+      </form>
+    </div>
   );
 }
